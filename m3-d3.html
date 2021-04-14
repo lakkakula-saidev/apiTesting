@@ -153,7 +153,12 @@
             <a href="#" class="btn btn-primary my-2" onclick="loadImages()"
               >Load Images</a
             >
-            <a href="#" class="btn btn-secondary my-2">Load Secondary Images</a>
+            <a
+              href="#"
+              class="btn btn-secondary my-2"
+              onclick="loadSecondaryImages()"
+              >Load Secondary Images</a
+            >
           </p>
         </div>
       </section>
@@ -189,6 +194,49 @@
             </div>
             <div class="col-md-4">
               <div class="card mb-4 shadow-sm class-img"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Button trigger modal -->
+
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <img
+                src="https://splashbase.s3.amazonaws.com/newoldstock/regular/tumblr_ph8vgdJV2r1sfie3io1_1280.jpg"
+                width="100%"
+                height="200"
+                alt=""
+              />
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -247,9 +295,9 @@
               const result = results.images[i];
               let temp = document.getElementsByClassName("class-img");
 
-              temp[i].innerHTML += `<div><img
+              temp[i].innerHTML += `<img
 
-                     src="${result.large_url}"
+                     src="${result.url}"
                      width="100%"
                      height="200"
                      alt=""
@@ -266,22 +314,52 @@
                     <div class="btn-group">
                       <button
                         type="button"
-                        class="btn btn-sm btn-outline-secondary"
+                        class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#exampleModal" onclick="modalImage(this)"
                       >
                         View
                       </button>
                       <button
                         type="button"
-                        class="btn btn-sm btn-outline-secondary"
+                        class="btn btn-sm btn-outline-secondary hideButton"
+                        onclick="hideFunction(this)"
                       >
-                        Edit
+                        Hide
                       </button>
                     </div>
-                    <small class="text-muted">9 mins</small>
+                    <small class="text-muted">${result.id}</small>
                   </div>
-                </div></div>`;
+                </div>`;
             }
           });
+      }
+
+      function loadSecondaryImages() {
+        let albumImages;
+        fetch("http://www.splashbase.co/api/v1/images/latest")
+          .then((response) => response.json())
+          .then((results) => {
+            console.log(results.images);
+            let j = 0;
+
+            for (let i = 8; i >= 0; i--) {
+              let temp = document.querySelectorAll("div.class-img img");
+              const result = results.images[j];
+              temp[i].src = result.url;
+              j++;
+            }
+          });
+      }
+
+      function modalImage(currentNode) {
+        let pNode = currentNode.closest("div.class-img");
+        let imgNode = pNode.querySelector("img").src;
+        let modalNode = document.querySelector("div.modal-body>img");
+        modalNode.src = imgNode;
+      }
+
+      function hideFunction(currentNode) {
+        let pNode = currentNode.closest("div.class-img");
+        pNode.style.display = "none";
       }
     </script>
 
