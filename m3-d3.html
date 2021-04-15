@@ -149,6 +149,30 @@
             This page will dynamically load pictures from the web, and display
             them in a cool way!
           </p>
+          <div class="form-group">
+            <form
+              accept-charset="UTF-8"
+              action="/images"
+              class="navbar-form"
+              method="get"
+              style="margin: 0; padding: 0; display: flex"
+            >
+              <input
+                class="form-control"
+                id="query"
+                name="query"
+                placeholder="Find any image or video"
+                type="text"
+              />
+              <input
+                class="btn btn-info"
+                name="commit"
+                type="button"
+                value="Query search"
+                onclick="loadQueryImages()"
+              />
+            </form>
+          </div>
           <p>
             <a href="#" class="btn btn-primary my-2" onclick="loadImages()"
               >Load Images</a
@@ -360,6 +384,33 @@
       function hideFunction(currentNode) {
         let pNode = currentNode.closest("div.class-img");
         pNode.style.display = "none";
+      }
+
+      function testing(stringGiven) {
+        fetch(
+          "http://www.splashbase.co/api/v1/images/search?query=" +
+            `${stringGiven}`
+        ).then((res) => console.log(res.json()));
+      }
+
+      function loadQueryImages() {
+        let queryString = document.getElementById("query").value;
+        fetch(
+          "http://www.splashbase.co/api/v1/images/search?query=" +
+            `${queryString}`
+        )
+          .then((response) => response.json())
+          .then((results) => {
+            console.log(results.images);
+            let j = 0;
+
+            for (let i = 8; i >= 0; i--) {
+              let temp = document.querySelectorAll("div.class-img img");
+              const result = results.images[j];
+              temp[i].src = result.url;
+              j++;
+            }
+          });
       }
     </script>
 
